@@ -19,7 +19,9 @@ services:
      - ./init.d/:/docker-entrypoint-initdb.d/:ro
 
   api:
-    image: daocloud.io/dfang/yuanxin_api
+    # image: daocloud.io/dfang/yuanxin_api
+    build:
+      context: ../yuanxin_api
     container_name: api
     restart: on-failure
     environment:
