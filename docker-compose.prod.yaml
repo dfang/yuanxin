@@ -8,6 +8,8 @@ services:
     restart: on-failure
     ports:
       - 3306:3306
+    networks: 
+      yuanxin:
     environment:
       # MYSQL_ROOT_PASSWORD: OC#oc2018
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
@@ -29,6 +31,9 @@ services:
       APP_DB_NAME: news
     depends_on:
       - db
+    networks: 
+      yuanxin:
+
     links:
       - db:db
     ports:
@@ -40,6 +45,9 @@ services:
     #   context: ../yuanxin_admin
     container_name: admin
     restart: on-failure
+    networks: 
+      yuanxin:
+
     depends_on:
       - db
     links:
@@ -52,6 +60,9 @@ services:
 
   elasticsearch:
     image: elasticsearch
+    networks: 
+      yuanxin:
+
     ports:
       - 9200:9200
       - 9300:9300
@@ -61,6 +72,9 @@ services:
     links:
       - elasticsearch:es
     restart: on-failure
+    networks: 
+      yuanxin:
+
     depends_on:
       - db
       - elasticsearch
@@ -72,3 +86,24 @@ services:
   #   image: kibana
   #   ports:
   #     - 5601:5601
+  redis:
+    image: redis
+    networks: 
+      yuanxin:
+
+  worker:
+    image: daocloud.io/dfang/yuanxin_worker
+    depends_on:
+      - db
+      - redis
+    networks: 
+      yuanxin:
+
+    environment:
+      APP_DB_USER: root
+      APP_DB_PASSWORD:
+      APP_DB_HOST: tcp(db:3306)
+      APP_DB_NAME: news
+
+networks: 
+  yuanxin:

@@ -6,6 +6,8 @@ services:
     image: mysql:5.7
     container_name: db
     restart: always
+    networks:
+       - yuanxin
     ports:
       - 3306:3306
     environment:
@@ -23,7 +25,9 @@ services:
     build:
       context: ../yuanxin_api
     container_name: api
-    restart: on-failure
+    restart: always
+    networks:
+       - yuanxin
     environment:
       APP_DB_USER: root
       APP_DB_PASSWORD:
@@ -33,13 +37,14 @@ services:
       - db:db
     ports:
       - 9090:9090
-  
   admin:
     # image: daocloud.io/dfang/yuanxin_admin
     build:
       context: ../yuanxin_admin
     container_name: admin
-    restart: on-failure
+    restart: always
+    networks:
+       - yuanxin
     links:
       - db:db
     ports:
@@ -48,24 +53,48 @@ services:
       RAILS_MASTER_KEY: 609ced37432b8493776e9969bd0dae25
       DATABASE_URL: mysql2://root:@db/news
 
-  # elasticsearch:
-  #   image: elasticsearch
-  #   ports:
-  #     - 9200:9200
-  #     - 9300:9300
-
-  # gme:
-  #   image: dfang/go-mysql-elasticsearch
-  #   links:
-  #     - elasticsearch:es
-  #   depends_on:
-  #     - db
-  #     - elasticsearch
-  #   volumes:
-  #     # - ./config/river.toml:/go/src/github.com/siddontang/go-mysql-elasticsearch/river/etc/river.toml
-  #     - ./config/river.toml:/go/etc/river.toml
-
+  elasticsearch:
+    image: elasticsearch
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+       - yuanxin
+  gme:
+    image: dfang/go-mysql-elasticsearch
+    links:
+      - elasticsearch:es
+    depends_on:
+      - db
+      - elasticsearch
+    volumes:
+      # - ./config/river.toml:/go/src/github.com/siddontang/go-mysql-elasticsearch/river/etc/river.toml
+      - ./config/river.toml:/go/etc/river.toml
+    networks:
+       - yuanxin
   # kibana:
   #   image: kibana
   #   ports:
   #     - 5601:5601
+  redis:
+    image: redis
+    networks:
+       - yuanxin
+  worker:
+    image:  
+      build:
+        context: ../yuanxin_worker
+    depends_on:
+      - db
+      - redis
+    links:
+      - db:db
+      - redis:redis
+    networks:
+       - yuanxin
+    environment:
+      RAILS_MASTER_KEY: 609ced37432b8493776e9969bd0dae25
+      DATABASE_URL: mysql2://root:@db/news
+
+networks: 
+  yuanxin:
