@@ -5,7 +5,7 @@ services:
   db:
     image: mysql:5.7
     container_name: db
-    restart: on-failure
+    restart: always
     ports:
       - 3306:3306
     networks: 
@@ -23,7 +23,7 @@ services:
   api:
     image: daocloud.io/dfang/yuanxin_api
     container_name: api
-    restart: on-failure
+    restart: always
     environment:
       APP_DB_USER: root
       APP_DB_PASSWORD:
@@ -44,7 +44,7 @@ services:
     # build:
     #   context: ../yuanxin_admin
     container_name: admin
-    restart: on-failure
+    restart: always
     networks: 
       yuanxin:
 
@@ -71,7 +71,7 @@ services:
     image: dfang/go-mysql-elasticsearch
     links:
       - elasticsearch:es
-    restart: on-failure
+    restart: always
     networks: 
       yuanxin:
 
