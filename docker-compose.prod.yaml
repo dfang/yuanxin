@@ -90,7 +90,9 @@ services:
     image: redis
     networks: 
       yuanxin:
-
+    ports:
+      - 6379:6379
+  
   worker:
     image: daocloud.io/dfang/yuanxin_worker
     depends_on:
