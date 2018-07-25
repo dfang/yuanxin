@@ -29,11 +29,12 @@ services:
       APP_DB_PASSWORD:
       APP_DB_HOST: tcp(db:3306)
       APP_DB_NAME: news
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     depends_on:
       - db
     networks: 
       yuanxin:
-
     links:
       - db:db
     ports:
@@ -47,7 +48,6 @@ services:
     restart: always
     networks: 
       yuanxin:
-
     depends_on:
       - db
     links:
@@ -62,7 +62,6 @@ services:
     image: elasticsearch
     networks: 
       yuanxin:
-
     ports:
       - 9200:9200
       - 9300:9300
@@ -74,7 +73,6 @@ services:
     restart: always
     networks: 
       yuanxin:
-
     depends_on:
       - db
       - elasticsearch
@@ -100,12 +98,13 @@ services:
       - redis
     networks: 
       yuanxin:
-
     environment:
       APP_DB_USER: root
       APP_DB_PASSWORD:
       APP_DB_HOST: tcp(db:3306)
       APP_DB_NAME: news
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
 
 networks: 
   yuanxin:

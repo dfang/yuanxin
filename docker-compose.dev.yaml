@@ -33,6 +33,8 @@ services:
       APP_DB_PASSWORD:
       APP_DB_HOST: tcp(db:3306)
       APP_DB_NAME: news
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     links:
       - db:db
     ports:
@@ -81,9 +83,8 @@ services:
     networks:
        - yuanxin
   worker:
-    image:  
-      build:
-        context: ../yuanxin_worker
+    build:
+      context: ../yuanxin_worker
     depends_on:
       - db
       - redis
@@ -93,8 +94,12 @@ services:
     networks:
        - yuanxin
     environment:
-      RAILS_MASTER_KEY: 609ced37432b8493776e9969bd0dae25
-      DATABASE_URL: mysql2://root:@db/news
+      APP_DB_USER: root
+      APP_DB_PASSWORD:
+      APP_DB_HOST: tcp(db:3306)
+      APP_DB_NAME: news
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
 
 networks: 
   yuanxin:
