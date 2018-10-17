@@ -59,7 +59,7 @@ services:
       DATABASE_URL: mysql2://root:@db/news
 
   elasticsearch:
-    image: elasticsearch
+    image: elasticsearch:6.4.1
     networks: 
       yuanxin:
     ports:
